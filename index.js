@@ -2,7 +2,7 @@ import cors from "cors"
 import express from "express"
 import mongoose from "mongoose"
 import config from "./config.js"
-import prepareTodoRoutes from "./routes/prepareTodoRoutes.js"
+import prepareTodoRoutes from "./src/routes/prepareTodoRoutes.js"
 
 await mongoose.connect(config.db.uri)
 
