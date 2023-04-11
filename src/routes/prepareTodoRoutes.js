@@ -1,4 +1,4 @@
-import fetchPost from "../../middleware/fetchPost.js"
+import fetchPost from "../middleware/fetchTodo.js"
 import TodoModel from "../db/models/TodoModel.js"
 
 const prepareTodoRoutes = (app) => {
@@ -20,36 +20,34 @@ const prepareTodoRoutes = (app) => {
 
   app.patch("/todos/:id", fetchPost, async (req, res) => {
     const { isDone } = req.body
-    const { post } = req.ctx
-    console.log(isDone)
-    Object.assign(post, {
-      title: post.title,
-      content: post.content,
-      isDone: isDone ?? post.isDone,
+    const { todo } = req.ctx
+
+    Object.assign(todo, {
+      isDone: isDone ?? todo.isDone,
     })
 
-    await post.save()
+    await todo.save()
 
-    res.send({ result: post })
+    res.send({ result: todo })
   })
 
   app.post("/todos", async (req, res) => {
     const { title, content, date } = req.body
 
     try {
-      const post = await new TodoModel({
+      const todo = await new TodoModel({
         title,
         content,
         date: date || new Date().toISOString(),
         isDone: false,
       }).save()
 
-      res.send({ result: post })
+      res.send({ result: todo })
     } catch (error) {
       console.error(error)
       res
         .status(500)
-        .send({ error: "Une erreur est survenue lors de la création du post" })
+        .send({ error: "Une erreur est survenue lors de la création du to-do" })
     }
   })
 }
