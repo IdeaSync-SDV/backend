@@ -1,3 +1,4 @@
+import fetchPost from "../../middleware/fetchPost.js"
 import TodoModel from "../db/models/TodoModel.js"
 
 const prepareTodoRoutes = (app) => {
@@ -15,6 +16,21 @@ const prepareTodoRoutes = (app) => {
     })
 
     res.send({ result: latestPost })
+  })
+
+  app.patch("/todos/:id", fetchPost, async (req, res) => {
+    const { isDone } = req.body
+    const { post } = req.ctx
+    console.log(isDone)
+    Object.assign(post, {
+      title: post.title,
+      content: post.content,
+      isDone: isDone ?? post.isDone,
+    })
+
+    await post.save()
+
+    res.send({ result: post })
   })
 
   app.post("/todos", async (req, res) => {
