@@ -1,8 +1,8 @@
-import cors from "cors"
-import express from "express"
-import mongoose from "mongoose"
+import prepareTodoRoutes from "./routes/prepareTodoRoutes.js"
 import config from "./config.js"
-import prepareTodoRoutes from "./src/routes/prepareTodoRoutes.js"
+import mongoose from "mongoose"
+import express from "express"
+import cors from "cors"
 
 await mongoose.connect(config.db.uri)
 
@@ -10,6 +10,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+
 app.use((req, res, next) => {
   req.ctx = {
     util: {
@@ -29,4 +30,5 @@ app.use((req, res, next) => {
 })
 
 prepareTodoRoutes(app)
-app.listen(config.port, () => console.log(`Listening on :${config.port}`))
+
+app.listen(config.port, () => console.log(`Listening on: ${config.port}`))
