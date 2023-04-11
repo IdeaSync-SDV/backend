@@ -1,13 +1,13 @@
 import TodoModel from "../db/models/TodoModel.js"
 
 const prepareTodoRoutes = (app) => {
-  app.get("/todo", async (req, res) => {
+  app.get("/todos", async (_, res) => {
     const posts = await TodoModel.find()
 
     res.send({ result: posts })
   })
 
-  app.get("/todo/latest", async (req, res) => {
+  app.get("/todos/latest", async (_, res) => {
     const latestPost = await TodoModel.findOne({ isDone: false }, null, {
       sort: {
         date: -1,
@@ -17,7 +17,7 @@ const prepareTodoRoutes = (app) => {
     res.send({ result: latestPost })
   })
 
-  app.post("/todo", async (req, res) => {
+  app.post("/todos", async (req, res) => {
     const { title, content, date } = req.body
 
     try {
