@@ -1,4 +1,3 @@
-import fetchTodo from "../middleware/fetchTodo.js"
 import TodoModel from "../db/models/TodoModel.js"
 
 const prepareTodoRoutes = (app) => {
@@ -12,20 +11,27 @@ const prepareTodoRoutes = (app) => {
     const todos = await TodoModel.find({ isDone: false })
     const oldestUnoneTodo = todos.sort((a, b) => a.date - b.date)[0]
 
-    res.send({ result: oldestUnoneTodo || null })
+    // We return a null string instead of null to avoid the client to have to parse the response
+    res.send({ result: oldestUnoneTodo || "null" })
   })
 
-  app.patch("/todos/:id", fetchTodo, async (req, res) => {
-    const { isDone } = req.body
-    const { todo } = req.ctx
+  app.patch("/todos/oldest", async (req, res) => {
+    const todos = await TodoModel.find({ isDone: false })
+    const oldestUnoneTodo = todos.sort((a, b) => a.date - b.date)[0]
 
-    Object.assign(todo, {
-      isDone: isDone ?? todo.isDone,
+    if (!oldestUnoneTodo) {
+      res.send({ result: null })
+
+      return
+    }
+
+    Object.assign(oldestUnoneTodo, {
+      isDone: true,
     })
 
-    await todo.save()
+    await oldestUnoneTodo.save()
 
-    res.send({ result: todo })
+    res.send({ result: oldestUnoneTodo })
   })
 
   app.post("/todos", async (req, res) => {
